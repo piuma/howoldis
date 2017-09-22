@@ -1,0 +1,90 @@
+{% extends "base_howoldis.html" %}
+
+{% if info %}
+{% set name = info.label %}
+{% endif %}
+
+{% block header %}
+<div class="container">
+  <br/>
+  <form action="/" method="GET">
+    
+    <h2>{{ _("How old is") }}
+      <input class="form-control"
+	     id="name"
+	     type="text"
+	     name="name"
+	     placeholder="   "
+	     value="{{name|title}}"/>?
+      <input type="submit" value="{{ _('ask') }}"></input>
+    </h2>
+    
+  </form>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+{% if info %}
+  {% if age %}
+  <h3>
+  {% if info.death %}
+  {{ _("Age at death") }}
+  {% endif %}
+  {{age}} {{ _("years") }}
+  </h3>
+  {% endif %}
+  
+
+  <b>{{ _("Born:") }}</b> {{info.wikidata['birth']}}
+  {% if info.death %}
+  <br/>
+  <b>{{ _("Died:") }}</b> {{info.wikidata['death']}}
+  {% endif %}
+
+  {% if info.description %}
+  <p>{{info.description}}</p>
+  {% endif %}
+  
+  {% else %}
+  {% if name %}
+  <h3>{{ _("I have no idea who this person is.") }}</h3>
+  {% endif %}
+{% endif %}
+</div>
+{% endblock %}
+
+{% block suggestions %}
+{% if suggestions %}
+<div class="container">
+  <div class="row">
+    {%- for suggestion in suggestions %}
+
+    <div class="three columns" id="people_{{ suggestion[1].pageid }}">
+      <center>
+	{% if suggestion[1].thumbnail %}
+	<img src="{{ suggestion[1].thumbnail.source }}"
+	     alt="image {{ suggestion[1].title }}"
+	     width="{{ suggestion[1].thumbnail.width }}"
+	     height="{{ suggestion[1].thumbnail.height }}" />
+	{% else %}
+	<img src="{{ url_for('static', filename='images/noimage.png') }}"
+	     alt="no image"
+	     width="76"
+	     height="100" />
+	{% endif %}
+	<h5>
+	  {{ suggestion[1].title }}
+	</h5>
+      </center>
+      <p>
+	{{ suggestion[1].extract }}
+      </p>
+    </div>
+    {%- endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

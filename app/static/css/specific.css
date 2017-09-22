@@ -1,0 +1,12 @@
+
+input.form-control {
+    height: auto;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: #1a0dab;
+}
+
+input.form-control:focus {
+    border: none;
+}
