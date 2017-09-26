@@ -11,10 +11,11 @@ default:
 isvirtualenv:
 	@if [ -z "$(VIRTUAL_ENV)" ]; then echo "ERROR: Not in a virtualenv." 1>&2; exit 1; fi
 
-run:
-	(((i=0; while \[ $$i -lt 40 \]; do sleep 0.5; i=$$((i+1)); \
-		netstat -anp tcp |grep "\.5000.*LISTEN" &>/dev/null && break; done) && open http://localhost:5000/) &)
-	./manage.py devserver
+build:
+	docker build -t howoldis .
+
+run: build
+	docker run -d --name howoldis -p 80:80  howoldis
 
 style:
 	flake8 --max-line-length=120 --statistics pypi_portal

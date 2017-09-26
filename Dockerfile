@@ -1,6 +1,7 @@
-FROM python:3.6
-ADD . /app
-WORKDIR /app
-EXPOSE 5000
-RUN pip install -r requirements.txt
-ENTRYPOINT ["python", "app.py"]
+FROM tiangolo/uwsgi-nginx-flask:python3.6
+
+#ENV STATIC_INDEX 1
+
+COPY . /
+
+RUN pip install -r /requirements.txt
