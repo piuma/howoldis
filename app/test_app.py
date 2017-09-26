@@ -1,4 +1,4 @@
-import app
+import app.main
 import unittest
 import os
 import tempfile
@@ -8,15 +8,15 @@ from flask import url_for
 class AppTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.db_fd, app.main.config['DATABASE'] = tempfile.mkstemp()
-        self.app = app.main.test_client()
+        self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
+        self.app = app.app.test_client()
         self.app.testing = True
 
 
     def tearDown(self):
         """Clear DB after running tests"""
         os.close(self.db_fd)
-        os.unlink(app.main.config['DATABASE'])
+        os.unlink(app.app.config['DATABASE'])
 
 
     def test_home_status_code(self):
