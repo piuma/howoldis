@@ -24,7 +24,7 @@ lint:
 	pylint --max-line-length=120 pypi_portal
 
 test:
-	python -m unittest app.test_app
+	python -m unittest tests.test_app
 	# py.test --cov-report term-missing --cov pypi_portal tests
 
 testpdb:
