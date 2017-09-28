@@ -4,4 +4,4 @@ services:
     build: .
     container_name: howoldis
     ports:
-      - "80:5000"
+      - "8000:80"
