@@ -25,7 +25,6 @@ lint:
 
 test:
 	python -m unittest tests.test_app
-	# py.test --cov-report term-missing --cov pypi_portal tests
 
 testpdb:
 	py.test --pdb tests
