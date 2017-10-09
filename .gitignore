@@ -1,4 +1,5 @@
 env
 *__pycache__
 deploy_key
-
+*.pyc
+deploy_key.pub

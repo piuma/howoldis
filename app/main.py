@@ -2,10 +2,12 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
 from flask_babel import Babel, gettext, ngettext
 import functools
-import wptools
-import arrow
 import json
 from pprint import pprint
+import traceback
+import requests
+from app.lib.person import Person
+from app.lib.search import wikisearch
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -28,13 +30,6 @@ def first(s):
     '''
     return next(iter(s))
 
-@functools.lru_cache(maxsize=128, typed=False)
-def _search(name):
-    if (name == "alfred einstain"):
-        return _test_search(name)
-    
-    info = _get_info(name)
-    return info, None
 
 def _test_search(name):
     with open("/home/mazzetta/prog/howoldis/alfred_einstain.json") as json_data:
@@ -60,15 +55,6 @@ musicologist and music editor.</p>"""
 
     return info, suggestions[1:5]
 
-#@functools.lru_cache(maxsize=128, typed=False)
-def _get_info(name):
-    page = wptools.page(name)
-    info = page.get_wikidata()
-    # info = page.get_query()
-    # thumbnail = info.images[i].url for i in info.images if info.images[i].kind == 'query-thumbnail'
-    return info
-
-
 @app.route('/_autocomplete', methods=['GET'])
 def autocomplete():
     query = request.args.get('q', "", type=str)
@@ -88,28 +74,25 @@ def index(name=None):
         return render_template('result.html')
     
     try:
-        info, suggestions = _search(name)
+        people = wikisearch(name)
     except LookupError:
         return render_template('result.html', name=name,
-                               suggestions=suggestions)
+                               suggestions=people)
+    except requests.exceptions.ConnectionError as e:
+        return render_template('error.html', name=name, message="Connection error")
     except Exception as e:
-        print("error %s" % e)
+        tb = traceback.format_exc()
+        print(tb)
         return render_template('error.html', name=name, message=e)
 
-    if info.what != "human":
-        return render_template('result.html',
-                               age=gettext("Non e` una persona"),
-                               info=info)
-
-    info.death = True
-    birth = arrow.get(info.wikidata['birth'])
+    
     try:
-        death = arrow.get(info.wikidata['death'])
-    except KeyError:
-        death = arrow.now()
-        info.death = False
-    age = int((death - birth).days / 365)
-    return render_template('result.html', info=info, age=age, suggestions=suggestions)
+        person = Person(people[0])
+    except Exception as e:
+        print("error person: %s" % e)
+        return render_template('error.html', name=name, message=e)
+    
+    return render_template('result.html', info=person, age=age, suggestions=people)
     
 
 if __name__ == "__main__":
