@@ -74,10 +74,10 @@ def index(name=None):
         return render_template('result.html')
     
     try:
-        people = wikisearch(name)
+        friends = wikisearch(name)
     except LookupError:
         return render_template('result.html', name=name,
-                               suggestions=people)
+                               friends=friends)
     except requests.exceptions.ConnectionError as e:
         return render_template('error.html', name=name, message="Connection error")
     except Exception as e:
@@ -87,12 +87,16 @@ def index(name=None):
 
     
     try:
-        person = Person(people[0])
+        print("=" * 20)
+        pprint(friends[0][1])
+        person = Person(friends[0][1])
+        friends = friends[1:5]
     except Exception as e:
-        print("error person: %s" % e)
+        tb = traceback.format_exc()
+        print(tb)
         return render_template('error.html', name=name, message=e)
     
-    return render_template('result.html', info=person, age=age, suggestions=people)
+    return render_template('result.html', person=person, friends=friends)
     
 
 if __name__ == "__main__":

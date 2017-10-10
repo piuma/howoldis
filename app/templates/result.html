@@ -1,7 +1,7 @@
 {% extends "base_howoldis.html" %}
 
-{% if info %}
-{% set name = info.label %}
+{% if person %}
+{% set name = person.name %}
 {% endif %}
 
 {% block header %}
@@ -27,48 +27,68 @@
 
 {% block content %}
 <div class="container">
-{% if info %}
-  {% if age %}
-  <h3>
-  {% if info.death %}
-  {{ _("Age at death") }}
-  {% endif %}
-  {{age}} {{ _("years") }}
-  </h3>
-  {% endif %}
-  
+  {% if person %}
+  <div class="row">
+    <div class="two columns">
+      {% if person.thumbnail %}
+      <img src="{{ person.thumbnail.source }}"
+	   alt="image {{ person.title }}"
+	   width="{{ person.thumbnail.width }}"
+	   height="{{ person.thumbnail.height }}" />
+	{% else %}
+	<img src="{{ url_for('static', filename='images/noimage.png') }}"
+	     alt="no image"
+	     width="76"
+	     height="100" />
+	{% endif %}
+    </div>
 
-  <b>{{ _("Born:") }}</b> {{info.wikidata['birth']}}
-  {% if info.death %}
-  <br/>
-  <b>{{ _("Died:") }}</b> {{info.wikidata['death']}}
-  {% endif %}
+    <div class="ten columns">
+      
+      {% if person.age %}
+      <h3>
+	{% if person.death %}
+	{{ _("Age at death") }}
+	{% endif %}
+	{{person.age}} {{ _("years") }}
+      </h3>
+      {% endif %}
+      
+      <b>{{ _("Born:") }}</b> {{person.birth}}
+      {% if person.is_death %}
+      <br/>
+      <b>{{ _("Died:") }}</b> {{person.death}}
+      {% endif %}
 
-  {% if info.description %}
-  <p>{{info.description}}</p>
+      {% if person.extract %}
+      <p>{{person.extract}}</p>
+      {% endif %}
+      
+      {% else %}
+      {% if name %}
+      <h3>{{ _("I have no idea who this person is.") }}</h3>
+      {% endif %}
+    </div>
+  </div>
   {% endif %}
-  
-  {% else %}
-  {% if name %}
-  <h3>{{ _("I have no idea who this person is.") }}</h3>
-  {% endif %}
-{% endif %}
+</div>
+</div>
 </div>
 {% endblock %}
 
-{% block suggestions %}
-{% if suggestions %}
+{% block friends %}
+{% if friends %}
 <div class="container">
   <div class="row">
-    {%- for suggestion in suggestions %}
+    {%- for friend in friends %}
 
-    <div class="three columns" id="people_{{ suggestion[1].pageid }}">
+    <div class="three columns" id="people_{{ friend[1].pageid }}">
       <center>
-	{% if suggestion[1].thumbnail %}
-	<img src="{{ suggestion[1].thumbnail.source }}"
-	     alt="image {{ suggestion[1].title }}"
-	     width="{{ suggestion[1].thumbnail.width }}"
-	     height="{{ suggestion[1].thumbnail.height }}" />
+	{% if friend[1].thumbnail %}
+	<img src="{{ friend[1].thumbnail.source }}"
+	     alt="image {{ friend[1].title }}"
+	     width="{{ friend[1].thumbnail.width }}"
+	     height="{{ friend[1].thumbnail.height }}" />
 	{% else %}
 	<img src="{{ url_for('static', filename='images/noimage.png') }}"
 	     alt="no image"
@@ -76,11 +96,11 @@
 	     height="100" />
 	{% endif %}
 	<h5>
-	  {{ suggestion[1].title }}
+	  {{ friend[1].title }}
 	</h5>
       </center>
       <p>
-	{{ suggestion[1].extract }}
+	{{ friend[1].extract | safe }}
       </p>
     </div>
     {%- endfor %}

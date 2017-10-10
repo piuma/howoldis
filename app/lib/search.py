@@ -35,9 +35,9 @@ def wikisearch(query, results=5, suggestion=False):
 	"exsentences": "1",
 	"exlimit": "max",
 	"exintro": 1,
-	"gsrsearch": "hastemplate:Birth_date Alfred Einstein",
+	"gsrsearch": "hastemplate:Birth_date %s" % query,
 	"gsrnamespace": "0",
-	"gsrlimit": "10"
+	"gsrlimit": results
     }
     
     if suggestion:
