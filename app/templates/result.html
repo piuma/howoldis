@@ -4,27 +4,6 @@
 {% set name = person.name %}
 {% endif %}
 
-{% block header %}
-<div class="container">
-  <br/>
-  <form action="/" method="GET">
-    
-    <h2>{{ _("How old is") }}
-      <input class="form-control"
-	     id="name"
-	     type="text"
-	     name="name"
-	     placeholder="   "
-	     value="{{name|title}}"/>?
-      <input type="submit" value="{{ _('ask') }}"></input>
-    </h2>
-    
-  </form>
-
-</div>
-{% endblock %}
-
-
 {% block content %}
 <div class="container">
   {% if person %}

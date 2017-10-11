@@ -1,24 +1,6 @@
-{% extends "base.html" %}
-
-{% block title %}How old is ... ?{% endblock %}
-
-{% block header %}
-<div class="container">
-  <br/>
-  <form action="/" method="POST">
-    
-    <h2>How old is
-      <input class="form-control" type="text"
-	     name="name" placeholder="    "
-	     value="{{name}}"/>?
-    </h2>
-    
-  </form>
-</div>
-{% endblock %}
+{% extends "base_howoldis.html" %}
 
 {% block content %}
-{% if name %}
 <div class="container">
   
   <h3>
@@ -26,5 +8,4 @@
   </h3>
   
 </div>
-{% endif %}
 {% endblock %}
