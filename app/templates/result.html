@@ -33,10 +33,10 @@
       </h3>
       {% endif %}
       
-      <b>{{ _("Born:") }}</b> {{person.birth}}
+      <b>{{ _("Born:") }}</b> {{person.birth | formatdate}}
       {% if person.is_death %}
       <br/>
-      <b>{{ _("Died:") }}</b> {{person.death}}
+      <b>{{ _("Died:") }}</b> {{person.death | formatdate}}
       {% endif %}
 
       {% if person.extract %}

@@ -1,6 +1,6 @@
 # Import flask and template operators
 from flask import Flask, redirect, url_for, request, render_template, jsonify
-from flask_babel import Babel, gettext, ngettext
+from flask_babel import Babel, gettext, ngettext, format_date
 import functools
 import json
 from pprint import pprint
@@ -29,6 +29,11 @@ def first(s):
        Raise StopIteration if the collection is empty.
     '''
     return next(iter(s))
+
+
+@app.template_filter('formatdate')
+def formatdate(d):
+    return format_date(d.date())
 
 
 def _test_search(name):
@@ -76,8 +81,7 @@ def index(name=None):
     try:
         friends = wikisearch(name)
     except LookupError:
-        return render_template('result.html', name=name,
-                               friends=friends)
+        return render_template('result.html', name=name)
     except requests.exceptions.ConnectionError as e:
         return render_template('error.html', name=name, message="Connection error")
     except Exception as e:

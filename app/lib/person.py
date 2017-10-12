@@ -15,7 +15,6 @@ class Person:
     age = None
     pageid = None
     thumbnail = None
-    pageimage = None
     lang = None
     
     def __init__(self, people):
@@ -26,11 +25,6 @@ class Person:
         except KeyError:
             pass
         
-        try:
-            self.pageimage = people['pageimage']
-        except KeyError:
-            pass
-
         self._retrive_info()
 
         
