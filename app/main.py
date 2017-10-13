@@ -81,6 +81,8 @@ def index(name=None):
     try:
         friends = wikisearch(name)
     except LookupError:
+        tb = traceback.format_exc()
+        print(tb)
         return render_template('result.html', name=name)
     except requests.exceptions.ConnectionError as e:
         return render_template('error.html', name=name, message="Connection error")

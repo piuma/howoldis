@@ -1,6 +1,7 @@
 import arrow
 import wikipedia
 import functools
+#from app.main import get_locale
 from pprint import pprint
 
 @functools.lru_cache(maxsize=128, typed=False)
@@ -27,14 +28,14 @@ def wikisearch(query, results=5, suggestion=False):
     search_params = {
         "action": "query",
 	"format": "json",
-	"prop": "pageimages|extracts",
+	"prop": "extracts",
 	"continue": "",
 	"generator": "search",
 	"pithumbsize": "100",
 	"pilimit": "max",
 	"exsentences": "1",
-	"exlimit": "max",
-	"exintro": 1,
+        "exlimit": "max",
+        "exintro": 1,
 	"gsrsearch": "hastemplate:Birth_date %s" % query,
 	"gsrnamespace": "0",
 	"gsrlimit": results
@@ -43,6 +44,8 @@ def wikisearch(query, results=5, suggestion=False):
     if suggestion:
         search_params['srinfo'] = 'suggestion'
 
+
+#    wikipedia.wikipedia.set_lang('en')
     raw_results = wikipedia.wikipedia._wiki_request(search_params)
 
     if 'error' in raw_results:
@@ -51,7 +54,9 @@ def wikisearch(query, results=5, suggestion=False):
         else:
             raise WikipediaException(raw_results['error']['info'])
 
-
+    if not 'query' in raw_results:
+        raise Exception("No 'query' in raw_results")
+        
     sorted_results = sorted(raw_results['query']['pages'].items(), key=lambda x: x[1]['index'])
         
     pprint(raw_results)

@@ -29,6 +29,16 @@ test:
 testpdb:
 	py.test --pdb tests
 
+update_translation:
+	pybabel update -i app/messages.pot -d app/translations
+
+etract_translation:
+	pybabel extract -F app/babel.cfg -o app/messages.pot app/
+
+translation:
+	# compile translation
+	pybabel compile -d app/translations
+
 testcovweb:
 	py.test --cov-report html --cov pypi_portal tests
 	open htmlcov/index.html
