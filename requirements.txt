@@ -3,3 +3,4 @@ wptools==0.3
 arrow==0.10.0
 Flask-Babel==0.11.2
 requests==2.18.4
+wikipedia==1.4.0
