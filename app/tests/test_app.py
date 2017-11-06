@@ -1,4 +1,4 @@
-from app.main import app
+from main import app
 import unittest
 import os
 import tempfile
