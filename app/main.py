@@ -6,8 +6,8 @@ import json
 from pprint import pprint
 import traceback
 import requests
-from app.lib.person import Person
-from app.lib.search import wikisearch
+from lib.person import Person
+from lib.search import wikisearch
 
 # Define the WSGI application object
 app = Flask(__name__)
