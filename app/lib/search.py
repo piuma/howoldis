@@ -1,8 +1,13 @@
 import arrow
 import wikipedia
 import functools
+import requests
 #from app.main import get_locale
 from pprint import pprint
+
+USER_AGENT = 'wikipedia (https://github.com/goldsmith/Wikipedia/)'
+RATE_LIMIT = False
+API_URL = 'http://en.wikipedia.org/w/api.php'
 
 @functools.lru_cache(maxsize=128, typed=False)
 def wikisearch(query, results=5, suggestion=False):
@@ -28,7 +33,7 @@ def wikisearch(query, results=5, suggestion=False):
     search_params = {
         "action": "query",
 	"format": "json",
-	"prop": "extracts",
+	"prop": "pageimages|extracts",
 	"continue": "",
 	"generator": "search",
 	"pithumbsize": "100",
@@ -45,8 +50,9 @@ def wikisearch(query, results=5, suggestion=False):
         search_params['srinfo'] = 'suggestion'
 
 
-#    wikipedia.wikipedia.set_lang('en')
-    raw_results = wikipedia.wikipedia._wiki_request(search_params)
+    # wikipedia.wikipedia.set_lang('fr')
+    #raw_results = wikipedia.wikipedia._wiki_request(search_params)
+    raw_results = _wiki_request(search_params)
 
     if 'error' in raw_results:
         if raw_results['error']['info'] in ('HTTP request timed out.', 'Pool queue is full'):
@@ -63,6 +69,44 @@ def wikisearch(query, results=5, suggestion=False):
     pprint(sorted_results)
     # print(json.dumps(sorted_results))
     return sorted_results
+
+
+def _wiki_request(params):
+  '''
+  Make a request to the Wikipedia API using the given search parameters.
+  Returns a parsed dict of the JSON response.
+  '''
+  global RATE_LIMIT_LAST_CALL
+  global USER_AGENT
+
+  params['format'] = 'json'
+  if not 'action' in params:
+      params['action'] = 'query'
+
+  headers = {
+      'User-Agent': USER_AGENT,
+      'Accept-Language': 'it'
+  }
+
+  if RATE_LIMIT and RATE_LIMIT_LAST_CALL and \
+     RATE_LIMIT_LAST_CALL + RATE_LIMIT_MIN_WAIT > datetime.now():
+
+      # it hasn't been long enough since the last API call
+      # so wait until we're in the clear to make the request
+
+      wait_time = (RATE_LIMIT_LAST_CALL + RATE_LIMIT_MIN_WAIT) - datetime.now()
+      time.sleep(int(wait_time.total_seconds()))
+
+  r = requests.get(API_URL, params=params, headers=headers)
+
+
+  pprint(r.headers)
+
+  
+  if RATE_LIMIT:
+      RATE_LIMIT_LAST_CALL = datetime.now()
+
+  return r.json()
 
 
 # mysearch("Barack")
