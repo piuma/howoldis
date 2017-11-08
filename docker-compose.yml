@@ -3,6 +3,8 @@ services:
   nginx:
     build: .
     container_name: howoldis
+    environment:
+      - PYTHONPATH=/app
     volumes:
       - ./app:/app
       - ./Makefile:/Makefile
