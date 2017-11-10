@@ -1,11 +1,12 @@
 # Import flask and template operators
-from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask import Flask, redirect, url_for, request, render_template, jsonify, send_from_directory
 from flask_babel import Babel, gettext, ngettext, format_date
 import functools
 import json
 from pprint import pprint
 import traceback
 import requests
+import os
 from lib.person import Person
 from lib.search import wikisearch
 
@@ -69,6 +70,10 @@ def autocomplete():
     "query": "Unit",
     "suggestions": ["United Arab Emirates", "United Kingdom", "United States"] } """
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'images/favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 @app.route('/')
 @app.route('/<string:name>')
@@ -103,7 +108,6 @@ def index(name=None):
         return render_template('error.html', name=name, message=e)
     
     return render_template('result.html', person=person, friends=friends)
-    
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=False, port=80)
